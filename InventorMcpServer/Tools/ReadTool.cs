@@ -15,9 +15,16 @@ public class ReadTool
     }
 
     [McpServerTool]
-    [Description("Returns active Inventor document name")]
+    [Description("Returns Active Inventor Document")]
     public string ReadActiveDocument()
     {
         return _inventorService.GetActiveDocumentName();
+    }
+
+    [McpServerTool]
+    [Description("Returns all sketches")]
+    public string ReadSketches()
+    {
+        return _inventorService.GetSketches();
     }
 }

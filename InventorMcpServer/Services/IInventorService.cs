@@ -3,4 +3,5 @@
 public interface IInventorService
 {
     string GetActiveDocumentName();
+    string GetSketches();
 }

@@ -1,7 +1,15 @@
 ﻿using InventorMcpServer.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using ModelContextProtocol.Server;
 
-var service = new InventorService();
+var builder = Host.CreateEmptyApplicationBuilder(settings: null);
 
-Console.WriteLine(service.CreateLine(0, 0, 10, 10));
+builder.Services.AddSingleton<IInventorService, InventorService>();
 
-Console.ReadKey();
+builder.Services
+    .AddMcpServer()
+    .WithStdioServerTransport()
+    .WithToolsFromAssembly();
+
+await builder.Build().RunAsync();

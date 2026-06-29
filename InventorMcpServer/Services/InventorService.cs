@@ -65,29 +65,14 @@ public class InventorService : IInventorService
     double endX,
     double endY)
     {
-        if (!Connect())
-            return "Inventor is not running.";
-
-        if (_inventor?.ActiveDocument is not PartDocument part)
-            return "Active document is not a Part.";
-
         try
         {
-            var compDef = part.ComponentDefinition;
+            var sketch = GetSketch();
 
-            PlanarSketch sketch;
+            if (sketch == null)
+                return "No Sketch";
 
-            if (compDef.Sketches.Count == 0)
-            {
-                var workPlane = compDef.WorkPlanes[3]; // XY Plane
-                sketch = compDef.Sketches.Add(workPlane);
-            }
-            else
-            {
-                sketch = compDef.Sketches[1];
-            }
-
-            var tg = _inventor.TransientGeometry;
+            var tg = _inventor!.TransientGeometry;
 
             sketch.SketchLines.AddByTwoPoints(
                 tg.CreatePoint2d(startX, startY),
@@ -102,19 +87,91 @@ public class InventorService : IInventorService
     }
 
     public string CreateCircle(
-        double centerX,
-        double centerY,
-        double radius)
+    double centerX,
+    double centerY,
+    double radius)
     {
-        return "Coming Next";
+        try
+        {
+            var sketch = GetSketch();
+
+            if (sketch == null)
+                return "No Sketch";
+
+            var tg = _inventor!.TransientGeometry;
+
+            sketch.SketchCircles.AddByCenterRadius(
+                tg.CreatePoint2d(centerX, centerY),
+                radius);
+
+            return "Circle Created Successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
     }
 
     public string CreateRectangle(
-        double x,
-        double y,
-        double width,
-        double height)
+    double x,
+    double y,
+    double width,
+    double height)
     {
-        return "Coming Next";
+        try
+        {
+            var sketch = GetSketch();
+
+            if (sketch == null)
+                return "No Sketch";
+
+            var tg = _inventor!.TransientGeometry;
+
+            var p1 = tg.CreatePoint2d(x, y);
+            var p2 = tg.CreatePoint2d(x + width, y);
+            var p3 = tg.CreatePoint2d(x + width, y + height);
+            var p4 = tg.CreatePoint2d(x, y + height);
+
+            sketch.SketchLines.AddByTwoPoints(p1, p2);
+            sketch.SketchLines.AddByTwoPoints(p2, p3);
+            sketch.SketchLines.AddByTwoPoints(p3, p4);
+            sketch.SketchLines.AddByTwoPoints(p4, p1);
+
+            return "Rectangle Created Successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
     }
+
+
+    private PartDocument? GetActivePart()
+    {
+        if (!Connect())
+            return null;
+
+        return _inventor?.ActiveDocument as PartDocument;
+    }
+
+
+
+    private PlanarSketch? GetSketch()
+    {
+        var part = GetActivePart();
+
+        if (part == null)
+            return null;
+
+        var compDef = part.ComponentDefinition;
+
+        if (compDef.Sketches.Count == 0)
+        {
+            return compDef.Sketches.Add(compDef.WorkPlanes[3]);
+        }
+
+        return compDef.Sketches[1];
+    }
+
+
 }

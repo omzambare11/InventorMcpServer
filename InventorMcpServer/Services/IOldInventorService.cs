@@ -1,6 +1,6 @@
 ﻿namespace InventorMcpServer.Services;
 
-public interface IInventorService
+public interface IOldInventorService
 {
     string CreateCircle(double centerX, double centerY, double radius);
     string CreateLine(double startX, double startY, double endX, double endY);

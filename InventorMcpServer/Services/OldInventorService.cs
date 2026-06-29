@@ -3,7 +3,7 @@ using InventorMcpServer.Interop;
 
 namespace InventorMcpServer.Services;
 
-public class InventorService : IInventorService
+public class OldInventorService : IOldInventorService
 {
     private Application? _inventor;
 

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using InventorMcpServer.Services;
+using InventorMcpServer.Services.Read;
 using ModelContextProtocol.Server;
 
 namespace InventorMcpServer.Tools;
@@ -7,24 +7,24 @@ namespace InventorMcpServer.Tools;
 [McpServerToolType]
 public class ReadTool
 {
-    private readonly IInventorService _inventorService;
+    private readonly IReadService _readService;
 
-    public ReadTool(IInventorService inventorService)
+    public ReadTool(IReadService readService)
     {
-        _inventorService = inventorService;
+        _readService = readService;
     }
 
     [McpServerTool]
     [Description("Returns Active Inventor Document")]
     public string ReadActiveDocument()
     {
-        return _inventorService.GetActiveDocumentName();
+        return _readService.GetActiveDocumentName();
     }
 
     [McpServerTool]
     [Description("Returns all sketches")]
     public string ReadSketches()
     {
-        return _inventorService.GetSketches();
+        return _readService.GetSketches();
     }
 }

@@ -28,4 +28,8 @@
     <PackageReference Include="ModelContextProtocol" Version="1.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Feature\" />
+  </ItemGroup>
+
 </Project>

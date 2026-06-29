@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using InventorMcpServer.Services;
+using InventorMcpServer.Services.Sketch;
 using ModelContextProtocol.Server;
 
 namespace InventorMcpServer.Tools;
@@ -7,42 +7,42 @@ namespace InventorMcpServer.Tools;
 [McpServerToolType]
 public class SketchTool
 {
-    private readonly IInventorService _inventorService;
+    private readonly ISketchService _sketchService;
 
-    public SketchTool(IInventorService inventorService)
+    public SketchTool(ISketchService sketchService)
     {
-        _inventorService = inventorService;
+        _sketchService = sketchService;
     }
 
     [McpServerTool]
-    [Description("Create a Line")]
+    [Description("Create Line")]
     public string CreateLine(
         double startX,
         double startY,
         double endX,
         double endY)
     {
-        return _inventorService.CreateLine(startX, startY, endX, endY);
+        return _sketchService.CreateLine(startX, startY, endX, endY);
     }
 
     [McpServerTool]
-    [Description("Create a Circle")]
+    [Description("Create Circle")]
     public string CreateCircle(
         double centerX,
         double centerY,
         double radius)
     {
-        return _inventorService.CreateCircle(centerX, centerY, radius);
+        return _sketchService.CreateCircle(centerX, centerY, radius);
     }
 
     [McpServerTool]
-    [Description("Create a Rectangle")]
+    [Description("Create Rectangle")]
     public string CreateRectangle(
         double x,
         double y,
         double width,
         double height)
     {
-        return _inventorService.CreateRectangle(x, y, width, height);
+        return _sketchService.CreateRectangle(x, y, width, height);
     }
 }

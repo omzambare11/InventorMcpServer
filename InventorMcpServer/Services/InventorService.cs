@@ -60,12 +60,45 @@ public class InventorService : IInventorService
     }
 
     public string CreateLine(
-        double startX,
-        double startY,
-        double endX,
-        double endY)
+    double startX,
+    double startY,
+    double endX,
+    double endY)
     {
-        return "Coming Next";
+        if (!Connect())
+            return "Inventor is not running.";
+
+        if (_inventor?.ActiveDocument is not PartDocument part)
+            return "Active document is not a Part.";
+
+        try
+        {
+            var compDef = part.ComponentDefinition;
+
+            PlanarSketch sketch;
+
+            if (compDef.Sketches.Count == 0)
+            {
+                var workPlane = compDef.WorkPlanes[3]; // XY Plane
+                sketch = compDef.Sketches.Add(workPlane);
+            }
+            else
+            {
+                sketch = compDef.Sketches[1];
+            }
+
+            var tg = _inventor.TransientGeometry;
+
+            sketch.SketchLines.AddByTwoPoints(
+                tg.CreatePoint2d(startX, startY),
+                tg.CreatePoint2d(endX, endY));
+
+            return "Line Created Successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
     }
 
     public string CreateCircle(

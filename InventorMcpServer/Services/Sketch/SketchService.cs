@@ -20,7 +20,7 @@ public class SketchService : ISketchService
     {
         try
         {
-            var sketch = _connection.GetSketch();
+            var sketch = _connection.CreateSketch();
 
             if (sketch == null)
                 return "No Sketch";
@@ -31,6 +31,7 @@ public class SketchService : ISketchService
                 tg.CreatePoint2d(startX, startY),
                 tg.CreatePoint2d(endX, endY));
 
+            sketch.ExitEdit();
             return "Line Created Successfully.";
         }
         catch (Exception ex)
@@ -46,7 +47,7 @@ public class SketchService : ISketchService
     {
         try
         {
-            var sketch = _connection.GetSketch();
+            var sketch = _connection.CreateSketch();
 
             if (sketch == null)
                 return "No Sketch";
@@ -57,6 +58,7 @@ public class SketchService : ISketchService
                 tg.CreatePoint2d(centerX, centerY),
                 radius);
 
+            sketch.ExitEdit();
             return "Circle Created Successfully.";
         }
         catch (Exception ex)
@@ -66,14 +68,14 @@ public class SketchService : ISketchService
     }
 
     public string CreateRectangle(
-        double x,
-        double y,
-        double width,
-        double height)
+    double x,
+    double y,
+    double width,
+    double height)
     {
         try
         {
-            var sketch = _connection.GetSketch();
+            var sketch = _connection.CreateSketch();
 
             if (sketch == null)
                 return "No Sketch";
@@ -81,14 +83,12 @@ public class SketchService : ISketchService
             var tg = _connection.Application!.TransientGeometry;
 
             var p1 = tg.CreatePoint2d(x, y);
-            var p2 = tg.CreatePoint2d(x + width, y);
-            var p3 = tg.CreatePoint2d(x + width, y + height);
-            var p4 = tg.CreatePoint2d(x, y + height);
+            var p2 = tg.CreatePoint2d(x + width, y + height);
 
-            sketch.SketchLines.AddByTwoPoints(p1, p2);
-            sketch.SketchLines.AddByTwoPoints(p2, p3);
-            sketch.SketchLines.AddByTwoPoints(p3, p4);
-            sketch.SketchLines.AddByTwoPoints(p4, p1);
+            // Inventor Native Rectangle API
+            sketch.SketchLines.AddAsTwoPointRectangle(p1, p2);
+
+            sketch.ExitEdit();
 
             return "Rectangle Created Successfully.";
         }

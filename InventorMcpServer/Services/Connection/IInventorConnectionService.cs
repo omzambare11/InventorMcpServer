@@ -10,5 +10,11 @@ public interface IInventorConnectionService
 
     PartDocument? GetActivePart();
 
-    PlanarSketch? GetSketch();
+    PlanarSketch CreateSketch();
+
+    PlanarSketch? GetLastSketch();
+
+    Profile? GetLastProfile();
+
+    void ClearCurrentSketch();
 }

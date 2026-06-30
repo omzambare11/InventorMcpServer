@@ -17,7 +17,7 @@ public class GeometryService : IGeometryService
     {
         List<LineModel> result = new();
 
-        var sketch = _connection.GetSketch();
+        var sketch = _connection.GetLastSketch();
 
         if (sketch == null)
             return result;
@@ -40,7 +40,7 @@ public class GeometryService : IGeometryService
     {
         List<CircleModel> result = new();
 
-        var sketch = _connection.GetSketch();
+        var sketch = _connection.CreateSketch();
 
         if (sketch == null)
             return result;
@@ -67,7 +67,7 @@ public class GeometryService : IGeometryService
     {
         List<PointModel> result = new();
 
-        var sketch = _connection.GetSketch();
+        var sketch = _connection.CreateSketch();
 
         if (sketch == null)
             return result;

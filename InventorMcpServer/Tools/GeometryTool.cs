@@ -42,4 +42,11 @@ public class GeometryTool
     {
         return _geometryService.ReadPoints();
     }
+
+    [McpServerTool]
+    [Description("Read all faces")]
+    public List<FaceModel> ReadFaces()
+    {
+        return _geometryService.ReadFaces();
+    }
 }

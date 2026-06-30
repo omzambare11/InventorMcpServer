@@ -18,4 +18,6 @@ public interface ISketchService
         double y,
         double width,
         double height);
+
+    string CreatePoint(double x, double y);
 }

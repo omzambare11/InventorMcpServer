@@ -83,4 +83,29 @@ public class GeometryService : IGeometryService
 
         return result;
     }
+
+    public List<FaceModel> ReadFaces()
+    {
+        List<FaceModel> result = new();
+
+        var part = _connection.GetActivePart();
+
+        if (part == null)
+            return result;
+
+        var faces = part.ComponentDefinition.SurfaceBodies[1].Faces;
+
+        int index = 1;
+
+        foreach (Face face in faces)
+        {
+            result.Add(new FaceModel
+            {
+                Index = index++,
+                Type = face.SurfaceType.ToString()
+            });
+        }
+
+        return result;
+    }
 }

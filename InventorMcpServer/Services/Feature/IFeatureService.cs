@@ -9,5 +9,13 @@ namespace InventorMcpServer.Services.Feature
     public interface IFeatureService
     {
         string Extrude(double distance);
+
+        string TestFace(int index);
+
+        string CreateHole(double diameter,double depth);
+
+        string CreateWorkPoint(double x, double y, double z);
+
+        string CreateThroughHole(double diameter);
     }
 }

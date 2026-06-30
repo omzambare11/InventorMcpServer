@@ -11,6 +11,12 @@ public class InventorConnectionService : IInventorConnectionService
     
     private PlanarSketch? _currentSketch;
 
+    private SketchPoint? _currentPoint;
+
+    private WorkPoint? _currentWorkPoint;
+
+    private SketchPoint? _lastSketchPoint;
+
     public bool Connect()
     {
         try
@@ -110,5 +116,59 @@ public class InventorConnectionService : IInventorConnectionService
         _currentSketch = null;
     }
 
+    public Face? GetFace(int index)
+    {
+        var part = GetActivePart();
+
+        if (part == null)
+            return null;
+
+        var faces = part.ComponentDefinition.SurfaceBodies[1].Faces;
+
+        if (index < 1 || index > faces.Count)
+            return null;
+
+        return faces[index];
+    }
+
+    public void SetLastPoint(SketchPoint point)
+    {
+        _currentPoint = point;
+    }
+
+    public SketchPoint? GetLastPoint()
+    {
+        return _currentPoint;
+    }
+
+    public void SetCurrentWorkPoint(WorkPoint point)
+    {
+        _currentWorkPoint = point;
+    }
+
+    public WorkPoint? GetCurrentWorkPoint()
+    {
+        return _currentWorkPoint;
+    }
+
+    public WorkAxis? GetDefaultAxis()
+    {
+        var part = GetActivePart();
+
+        if (part == null)
+            return null;
+
+        return part.ComponentDefinition.WorkAxes[3];
+    }
+
+    public void SetLastSketchPoint(SketchPoint point)
+    {
+        _lastSketchPoint = point;
+    }
+
+    public SketchPoint? GetLastSketchPoint()
+    {
+        return _lastSketchPoint;
+    }
 
 }

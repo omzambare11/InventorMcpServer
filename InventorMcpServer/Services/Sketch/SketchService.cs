@@ -97,4 +97,46 @@ public class SketchService : ISketchService
             return ex.Message;
         }
     }
+
+    public string CreatePoint(double x, double y)
+    {
+        try
+        {
+            var sketch = _connection.GetLastSketch();
+
+            if (sketch == null)
+                return "No Sketch";
+
+            var tg = _connection.Application!.TransientGeometry;
+
+            foreach (SketchPoint p in sketch.SketchPoints)
+            {
+                if (Math.Abs(p.Geometry.X - x) < 0.0001 &&
+                    Math.Abs(p.Geometry.Y - y) < 0.0001)
+                {
+                    _connection.SetLastSketchPoint(p);
+                    return "Point already exists.";
+                }
+            }
+
+            SketchPoint point =
+                sketch.SketchPoints.Add(
+                    tg.CreatePoint2d(x, y),
+                    false);
+
+            _connection.SetLastSketchPoint(point);
+
+            return "Point Created Successfully.";
+
+            _connection.SetLastSketchPoint(point);
+
+            sketch.ExitEdit();
+
+            return "Point Created Successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+    }
 }

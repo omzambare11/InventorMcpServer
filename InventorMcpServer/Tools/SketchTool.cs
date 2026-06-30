@@ -45,4 +45,11 @@ public class SketchTool
     {
         return _sketchService.CreateRectangle(x, y, width, height);
     }
+
+    [McpServerTool]
+    [Description("Creates a sketch point.")]
+    public string CreatePoint(double x, double y)
+    {
+        return _sketchService.CreatePoint(x, y);
+    }
 }

@@ -11,4 +11,6 @@ public interface IGeometryService
     List<ArcModel> ReadArcs();
 
     List<PointModel> ReadPoints();
+
+    List<FaceModel> ReadFaces();
 }

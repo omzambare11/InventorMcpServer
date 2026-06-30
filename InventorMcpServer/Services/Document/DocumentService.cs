@@ -1,13 +1,13 @@
 ﻿using Inventor;
 using InventorMcpServer.Services.Connection;
 
-namespace InventorMcpServer.Services.Read;
+namespace InventorMcpServer.Services.Document;
 
-public class ReadService : IReadService
+public class DocumentService : IDocumentService
 {
     private readonly IInventorConnectionService _connection;
 
-    public ReadService(IInventorConnectionService connection)
+    public DocumentService(IInventorConnectionService connection)
     {
         _connection = connection;
     }

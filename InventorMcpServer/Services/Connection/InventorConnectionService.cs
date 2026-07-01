@@ -1,5 +1,6 @@
 ﻿using Inventor;
 using InventorMcpServer.Interop;
+using Path = Inventor.Path;
 
 namespace InventorMcpServer.Services.Connection;
 
@@ -30,16 +31,17 @@ public class InventorConnectionService : IInventorConnectionService
         }
     }
 
-    public PlanarSketch CreateSketch()
+    public PlanarSketch CreateSketch(int planeIndex)
     {
         var part = GetActivePart();
 
         if (part == null)
             throw new Exception("No active part.");
 
-        _currentSketch = part.ComponentDefinition
-            .Sketches
-            .Add(part.ComponentDefinition.WorkPlanes[3]);
+        _currentSketch =
+            part.ComponentDefinition
+                .Sketches
+                .Add(part.ComponentDefinition.WorkPlanes[planeIndex]);
 
         _currentSketch.Edit();
 
@@ -64,13 +66,7 @@ public class InventorConnectionService : IInventorConnectionService
 
     public Profile? GetLastProfile()
     {
-        var sketch = GetLastSketch();
-
-        if (sketch == null)
-            return null;
-
-        // Inventor generates the profile here
-        return sketch.Profiles.AddForSolid();
+        return _lastProfile;
     }
 
     public PlanarSketch? GetLastSketch()
@@ -204,7 +200,39 @@ public class InventorConnectionService : IInventorConnectionService
         return collection;
     }
 
+    private Path? _lastPath;
 
+    public void SetLastPath(Path path)
+    {
+        _lastPath = path;
+    }
 
+    public Path? GetLastPath()
+    {
+        return _lastPath;
+    }
 
+    private SketchLine? _lastSketchLine;
+
+    public void SetLastSketchLine(SketchLine line)
+    {
+        _lastSketchLine = line;
+    }
+
+    public SketchLine? GetLastSketchLine()
+    {
+        return _lastSketchLine;
+    }
+
+    public PlanarSketch CreateSketch()
+    {
+        throw new NotImplementedException();
+    }
+
+    private Profile? _lastProfile;
+
+    public void SetLastProfile(Profile profile)
+    {
+        _lastProfile = profile;
+    }
 }

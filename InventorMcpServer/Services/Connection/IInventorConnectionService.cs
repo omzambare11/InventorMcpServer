@@ -1,4 +1,5 @@
 ﻿using Inventor;
+using Path = Inventor.Path;
 
 namespace InventorMcpServer.Services.Connection;
 
@@ -11,6 +12,7 @@ public interface IInventorConnectionService
     public PartDocument? GetActivePart();
 
     PlanarSketch CreateSketch();
+    PlanarSketch CreateSketch(int workPlaneIndex);
 
     PlanarSketch? GetLastSketch();
 
@@ -38,4 +40,14 @@ public interface IInventorConnectionService
     void SetLastFeature(object feature);
 
     ObjectCollection CreateFeatureCollection();
+
+    void SetLastPath(Path path);
+
+    Path? GetLastPath();
+
+    void SetLastSketchLine(SketchLine line);
+
+    SketchLine? GetLastSketchLine();
+
+    void SetLastProfile(Profile profile);
 }

@@ -553,4 +553,86 @@ public class FeatureService : IFeatureService
             return ex.ToString();
         }
     }
+
+    public string CreateSweep()
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var profile = _connection.GetLastProfile();
+
+            if (profile == null)
+                return "No profile found.";
+
+            var path = _connection.GetLastPath();
+
+            if (path == null)
+                return "No sweep path found.";
+
+            var compDef = part.ComponentDefinition;
+
+            var definition =
+                compDef.Features
+                       .SweepFeatures
+                       .CreateSweepDefinition(
+                            SweepTypeEnum.kPathSweepType,
+                            profile,
+                            path,
+                            PartFeatureOperationEnum.kJoinOperation);
+
+            definition.ProfileOrientation =
+                SweepProfileOrientationEnum.kNormalToPath;
+
+            var feature =
+                compDef.Features
+                       .SweepFeatures
+                       .Add(definition);
+
+            _connection.SetLastFeature(feature);
+
+            part.Update();
+
+            _connection.Application!.ActiveView.Update();
+
+            return "Sweep created successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
+    public string CreateSweepPath()
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var line = _connection.GetLastSketchLine();
+
+            if (line == null)
+                return "No sketch line found.";
+
+            var path =
+                part.ComponentDefinition
+                    .Features
+                    .SweepFeatures
+                    .CreatePath(line);
+
+            _connection.SetLastPath(path);
+
+            return "Sweep Path Created.";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
 }

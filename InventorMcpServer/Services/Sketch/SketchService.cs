@@ -20,16 +20,18 @@ public class SketchService : ISketchService
     {
         try
         {
-            var sketch = _connection.CreateSketch();
+            var sketch = _connection.CreateSketch(3);
 
             if (sketch == null)
                 return "No Sketch";
 
             var tg = _connection.Application!.TransientGeometry;
 
-            sketch.SketchLines.AddByTwoPoints(
-                tg.CreatePoint2d(startX, startY),
-                tg.CreatePoint2d(endX, endY));
+            var line = sketch.SketchLines.AddByTwoPoints(
+            tg.CreatePoint2d(startX, startY),
+            tg.CreatePoint2d(endX, endY));
+
+            _connection.SetLastSketchLine(line);
 
             sketch.ExitEdit();
             return "Line Created Successfully.";
@@ -40,30 +42,51 @@ public class SketchService : ISketchService
         }
     }
 
-    public string CreateCircle(
-        double centerX,
-        double centerY,
-        double radius)
+    public string CreateCircle(double centerX, double centerY, double radius)
     {
         try
         {
-            var sketch = _connection.CreateSketch();
-
+            var sketch = _connection.CreateSketch(2);
             if (sketch == null)
-                return "No Sketch";
+                return "Sketch NULL";
 
             var tg = _connection.Application!.TransientGeometry;
 
-            sketch.SketchCircles.AddByCenterRadius(
-                tg.CreatePoint2d(centerX, centerY),
-                radius);
+            SketchCircle circle;
+
+            try
+            {
+                circle = sketch.SketchCircles.AddByCenterRadius(
+                    tg.CreatePoint2d(centerX, centerY),
+                    radius);
+
+                System.Diagnostics.Debug.WriteLine("Circle OK");
+            }
+            catch (Exception ex)
+            {
+                return "Circle Failed : " + ex.Message;
+            }
+
+            try
+            {
+                var profile = sketch.Profiles.AddForSolid();
+
+                _connection.SetLastProfile(profile);
+
+                System.Diagnostics.Debug.WriteLine("Profile OK");
+            }
+            catch (Exception ex)
+            {
+                return "Profile Failed : " + ex.Message;
+            }
 
             sketch.ExitEdit();
-            return "Circle Created Successfully.";
+
+            return "Circle Created";
         }
         catch (Exception ex)
         {
-            return ex.Message;
+            return ex.ToString();
         }
     }
 

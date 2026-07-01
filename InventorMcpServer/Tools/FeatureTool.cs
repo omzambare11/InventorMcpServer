@@ -113,4 +113,18 @@ public class FeatureTool
     {
         return _featureService.CreateDraft(angle);
     }
+
+    [McpServerTool]
+    [Description("Creates a sweep feature using the last profile and last path.")]
+    public string CreateSweep()
+    {
+        return _featureService.CreateSweep();
+    }
+
+    [McpServerTool]
+    [Description("Creates a sweep path from the last sketch line.")]
+    public string CreateSweepPath()
+    {
+        return _featureService.CreateSweepPath();
+    }
 }

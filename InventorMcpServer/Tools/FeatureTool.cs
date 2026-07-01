@@ -63,4 +63,11 @@ public class FeatureTool
         return _featureService.CreateChamfer(distance);
     }
 
+
+    [McpServerTool]
+    [Description("Creates a circular pattern from the last created feature.")]
+    public string CreateCircularPattern(int count, double angle)
+    {
+        return _featureService.CreateCircularPattern(count, angle);
+    }
 }

@@ -8,7 +8,7 @@ public interface IInventorConnectionService
 
     bool Connect();
 
-    PartDocument? GetActivePart();
+    public PartDocument? GetActivePart();
 
     PlanarSketch CreateSketch();
 
@@ -32,4 +32,10 @@ public interface IInventorConnectionService
 
     SketchPoint? GetLastSketchPoint();
     void SetLastSketchPoint(SketchPoint point);
+
+    object? GetLastFeature();
+
+    void SetLastFeature(object feature);
+
+    ObjectCollection CreateFeatureCollection();
 }

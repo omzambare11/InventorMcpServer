@@ -54,13 +54,13 @@ public class FeatureService : IFeatureService
                 distance,
                 PartFeatureExtentDirectionEnum.kPositiveExtentDirection);
 
-            compDef.Features.ExtrudeFeatures.Add(extrudeDef);
+            var feature =compDef.Features.ExtrudeFeatures.Add(extrudeDef);
 
-            part.Update();
+            _connection.SetLastFeature(feature);
 
-                _connection.ClearCurrentSketch();
+            return $"Extruded by {distance} successfully.";
 
-                return $"Extruded by {distance} successfully.";
+
         }
         catch (Exception ex)
         {
@@ -132,12 +132,14 @@ public class FeatureService : IFeatureService
 
             centers.Add(point);
 
-            part.ComponentDefinition.Features
-                .HoleFeatures
-                .AddDrilledByThroughAllExtent(
-                    centers,
-                    diameter,
-                    PartFeatureExtentDirectionEnum.kNegativeExtentDirection);
+            var feature =part.ComponentDefinition.Features
+            .HoleFeatures
+            .AddDrilledByThroughAllExtent(
+                centers,
+                diameter,
+                PartFeatureExtentDirectionEnum.kPositiveExtentDirection);
+
+            _connection.SetLastFeature(feature);
 
             part.Update();
 
@@ -179,9 +181,12 @@ public class FeatureService : IFeatureService
             if (edges.Count == 0)
                 return "No edges found.";
 
+            var feature =
             compDef.Features.FilletFeatures.AddSimple(
                 edges,
                 $"{radius} mm");
+
+            _connection.SetLastFeature(feature);
 
             part.Update();
 
@@ -221,15 +226,53 @@ public class FeatureService : IFeatureService
             if (edges.Count == 0)
                 return "No edges found.";
 
+            var feature =
             compDef.Features.ChamferFeatures.AddUsingDistance(
                 edges,
                 $"{distance} mm");
+
+            _connection.SetLastFeature(feature);
 
             part.Update();
             app.ActiveView.Update();
 
             return $"Chamfer ({distance} mm) created.";
         }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
+    public string TestFeatureCollection()
+    {
+        var collection = _connection.CreateFeatureCollection();
+
+        return $"Features : {collection.Count}";
+    }
+
+    public string CreateCircularPattern(int count, double angle)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var feature = _connection.GetLastFeature();
+
+            if (feature == null)
+                return "No last feature.";
+
+            var axis = part.ComponentDefinition.WorkAxes[3];
+
+            return
+                $@"Feature : {feature.GetType().Name}
+            Axis : {axis.Name}
+            Count : {count}
+            Angle : {angle}";
+                    }
         catch (Exception ex)
         {
             return ex.ToString();

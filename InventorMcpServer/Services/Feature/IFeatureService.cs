@@ -21,5 +21,7 @@ namespace InventorMcpServer.Services.Feature
         string CreateFillet(double radius);
 
         string CreateChamfer(double distance);
+
+        string CreateCircularPattern(int count, double angle);
     }
 }

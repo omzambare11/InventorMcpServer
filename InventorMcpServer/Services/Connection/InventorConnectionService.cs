@@ -51,7 +51,15 @@ public class InventorConnectionService : IInventorConnectionService
         if (!Connect())
             return null;
 
-        return _inventor?.ActiveDocument as PartDocument;
+        var part = _inventor?.ActiveDocument as PartDocument;
+
+        if (part != null)
+        {
+            part.UnitsOfMeasure.LengthUnits =
+                UnitsTypeEnum.kMillimeterLengthUnits;
+        }
+
+        return part;
     }
 
     public Profile? GetLastProfile()
@@ -169,6 +177,31 @@ public class InventorConnectionService : IInventorConnectionService
     public SketchPoint? GetLastSketchPoint()
     {
         return _lastSketchPoint;
+    }
+
+    private object? _lastFeature;
+
+    public object? GetLastFeature()
+    {
+        return _lastFeature;
+    }
+
+    public void SetLastFeature(object feature)
+    {
+        _lastFeature = feature;
+    }
+
+    public ObjectCollection CreateFeatureCollection()
+    {
+        var collection =
+            Application!.TransientObjects.CreateObjectCollection();
+
+        var feature = GetLastFeature();
+
+        if (feature != null)
+            collection.Add(feature);
+
+        return collection;
     }
 
 }

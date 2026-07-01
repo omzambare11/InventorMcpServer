@@ -31,5 +31,7 @@ namespace InventorMcpServer.Services.Feature
         string CreateShell(double thickness);
 
         string CreateRevolve(double angle);
+
+        string CreateDraft(double angle);
     }
 }

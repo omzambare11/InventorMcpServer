@@ -503,4 +503,54 @@ public class FeatureService : IFeatureService
             return ex.ToString();
         }
     }
+
+    public string CreateDraft(double angle)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var app = _connection.Application!;
+            var compDef = part.ComponentDefinition;
+
+            FaceCollection faces =
+                app.TransientObjects.CreateFaceCollection();
+
+            // Temporary: use first side face
+            faces.Add(compDef.SurfaceBodies[1].Faces[1]);
+
+            // Temporary: use XY plane as neutral plane
+            WorkPlane fixedPlane =
+                compDef.WorkPlanes[3];
+
+            var definition =
+                compDef.Features
+                       .FaceDraftFeatures
+                       .CreateFaceDraftDefinition();
+
+            definition.SetFixedPlane(
+                faces,
+                fixedPlane,
+                $"{angle} deg");
+
+            var feature =
+                compDef.Features
+                       .FaceDraftFeatures
+                       .Add(definition);
+
+            _connection.SetLastFeature(feature);
+
+            part.Update();
+            app.ActiveView.Update();
+
+            return $"Draft ({angle}°) created.";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
 }

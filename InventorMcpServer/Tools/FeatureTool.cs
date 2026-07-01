@@ -106,4 +106,11 @@ public class FeatureTool
     {
         return _featureService.CreateRevolve(angle);
     }
+
+    [McpServerTool]
+    [Description("Creates a draft feature.")]
+    public string CreateDraft(double angle)
+    {
+        return _featureService.CreateDraft(angle);
+    }
 }

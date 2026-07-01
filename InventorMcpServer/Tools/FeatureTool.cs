@@ -49,5 +49,18 @@ public class FeatureTool
         return _featureService.CreateThroughHole(diameter);
     }
 
+    [McpServerTool]
+    [Description("Creates fillet on all outer edges.")]
+    public string CreateFillet(double radius)
+    {
+        return _featureService.CreateFillet(radius);
+    }
+
+    [McpServerTool]
+    [Description("Creates chamfer on all outer edges.")]
+    public string CreateChamfer(double distance)
+    {
+        return _featureService.CreateChamfer(distance);
+    }
 
 }

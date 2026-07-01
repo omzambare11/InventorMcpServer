@@ -136,7 +136,7 @@ public class FeatureService : IFeatureService
                 .HoleFeatures
                 .AddDrilledByThroughAllExtent(
                     centers,
-                    $"{diameter} mm",
+                    diameter,
                     PartFeatureExtentDirectionEnum.kNegativeExtentDirection);
 
             part.Update();
@@ -145,6 +145,90 @@ public class FeatureService : IFeatureService
            
 
             return $"Through Hole Created ({diameter})";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
+    public string CreateFillet(double radius)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var app = _connection.Application!;
+
+            var compDef = part.ComponentDefinition;
+
+            EdgeCollection edges =
+                app.TransientObjects.CreateEdgeCollection();
+
+            foreach (SurfaceBody body in compDef.SurfaceBodies)
+            {
+                foreach (Edge edge in body.Edges)
+                {
+                    edges.Add(edge);
+                }
+            }
+
+            if (edges.Count == 0)
+                return "No edges found.";
+
+            compDef.Features.FilletFeatures.AddSimple(
+                edges,
+                $"{radius} mm");
+
+            part.Update();
+
+            app.ActiveView.Update();
+
+            return $"Fillet ({radius} mm) created.";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
+    public string CreateChamfer(double distance)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var app = _connection.Application!;
+            var compDef = part.ComponentDefinition;
+
+            EdgeCollection edges =
+                app.TransientObjects.CreateEdgeCollection();
+
+            foreach (SurfaceBody body in compDef.SurfaceBodies)
+            {
+                foreach (Edge edge in body.Edges)
+                {
+                    edges.Add(edge);
+                }
+            }
+
+            if (edges.Count == 0)
+                return "No edges found.";
+
+            compDef.Features.ChamferFeatures.AddUsingDistance(
+                edges,
+                $"{distance} mm");
+
+            part.Update();
+            app.ActiveView.Update();
+
+            return $"Chamfer ({distance} mm) created.";
         }
         catch (Exception ex)
         {

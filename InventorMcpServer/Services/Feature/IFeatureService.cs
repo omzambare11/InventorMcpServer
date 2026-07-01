@@ -17,5 +17,9 @@ namespace InventorMcpServer.Services.Feature
         string CreateWorkPoint(double x, double y, double z);
 
         string CreateThroughHole(double diameter);
+
+        string CreateFillet(double radius);
+
+        string CreateChamfer(double distance);
     }
 }

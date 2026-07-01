@@ -278,4 +278,169 @@ public class FeatureService : IFeatureService
             return ex.ToString();
         }
     }
+
+    public string CreateMirror(bool removeOriginal = false)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var feature = _connection.GetLastFeature();
+
+            if (feature == null)
+                return "No feature available.";
+
+            var app = _connection.Application!;
+
+            ObjectCollection features =
+                app.TransientObjects.CreateObjectCollection();
+
+            features.Add(feature);
+
+            // Default Origin Plane
+            // 1 = YZ
+            // 2 = XZ
+            // 3 = XY
+            WorkPlane mirrorPlane =
+                part.ComponentDefinition.WorkPlanes[1];
+
+            var mirror =
+                part.ComponentDefinition.Features
+                    .MirrorFeatures
+                    .Add(
+                        features,
+                        mirrorPlane,
+                        removeOriginal,
+                        PatternComputeTypeEnum.kOptimizedCompute);
+
+            _connection.SetLastFeature(mirror);
+
+            part.Update();
+
+            app.ActiveView.Update();
+
+            return "Mirror Created Successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
+    public string CreateRectangularPattern(
+    int xCount,
+    double xSpacing,
+    int yCount,
+    double ySpacing)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var feature = _connection.GetLastFeature();
+
+            if (feature == null)
+                return "No feature available.";
+
+            var app = _connection.Application!;
+
+            ObjectCollection features =
+                app.TransientObjects.CreateObjectCollection();
+
+            features.Add(feature);
+
+            // Origin axes
+            WorkAxis xAxis = part.ComponentDefinition.WorkAxes[1];
+            WorkAxis yAxis = part.ComponentDefinition.WorkAxes[2];
+
+            var pattern =
+                part.ComponentDefinition.Features
+                .RectangularPatternFeatures
+                .Add(
+                    features,
+                    xAxis,
+                    true,
+                    xCount,
+                    $"{xSpacing} mm",
+                    PatternSpacingTypeEnum.kDefault,
+                    Type.Missing,
+                    yAxis,
+                    true,
+                    yCount,
+                    $"{ySpacing} mm",
+                    PatternSpacingTypeEnum.kDefault,
+                    Type.Missing,
+                    PatternComputeTypeEnum.kOptimizedCompute,
+                    PatternOrientationEnum.kIdentical);
+
+            _connection.SetLastFeature(pattern);
+
+            part.Update();
+
+            app.ActiveView.Update();
+
+            return "Rectangular Pattern Created Successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
+
+    public string CreateShell(double thickness)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var app = _connection.Application!;
+
+            // Remove Top Face
+            Face topFace = part.ComponentDefinition.SurfaceBodies[1].Faces[1];
+
+            FaceCollection faces =
+                app.TransientObjects.CreateFaceCollection();
+
+            faces.Add(topFace);
+
+            ShellDefinition definition =
+                part.ComponentDefinition.Features
+                    .ShellFeatures
+                    .CreateDefinition(
+                        faces,
+                        Type.Missing,
+                        $"{thickness} mm",
+                        ShellDirectionEnum.kInsideShellDirection,
+                        ShellMethodEnum.kSharpShellMethod,
+                        Type.Missing);
+
+            var shell =
+                part.ComponentDefinition.Features
+                    .ShellFeatures
+                    .Add(definition);
+
+            _connection.SetLastFeature(shell);
+
+            part.Update();
+
+            app.ActiveView.Update();
+
+            return $"Shell Created ({thickness} mm)";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
+
 }

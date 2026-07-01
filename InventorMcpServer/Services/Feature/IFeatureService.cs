@@ -23,5 +23,11 @@ namespace InventorMcpServer.Services.Feature
         string CreateChamfer(double distance);
 
         string CreateCircularPattern(int count, double angle);
+
+        string CreateMirror(bool removeOriginal = false);
+
+        string CreateRectangularPattern(int xCount,double xSpacing,int yCount,double ySpacing);
+
+        string CreateShell(double thickness);
     }
 }

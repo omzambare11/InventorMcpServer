@@ -70,4 +70,34 @@ public class FeatureTool
     {
         return _featureService.CreateCircularPattern(count, angle);
     }
+
+
+    [McpServerTool]
+    [Description("Mirrors the last created feature about the YZ plane.")]
+    public string CreateMirror(bool removeOriginal = false)
+    {
+        return _featureService.CreateMirror(removeOriginal);
+    }
+
+    [McpServerTool]
+    [Description("Creates a rectangular pattern from the last feature.")]
+    public string CreateRectangularPattern(
+    int xCount,
+    double xSpacing,
+    int yCount,
+    double ySpacing)
+    {
+        return _featureService.CreateRectangularPattern(
+            xCount,
+            xSpacing,
+            yCount,
+            ySpacing);
+    }
+
+    [McpServerTool]
+    [Description("Creates a shell feature.")]
+    public string CreateShell(double thickness)
+    {
+        return _featureService.CreateShell(thickness);
+    }
 }

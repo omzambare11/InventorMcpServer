@@ -100,4 +100,10 @@ public class FeatureTool
     {
         return _featureService.CreateShell(thickness);
     }
+
+    [McpServerTool]
+    public string CreateRevolve(double angle)
+    {
+        return _featureService.CreateRevolve(angle);
+    }
 }

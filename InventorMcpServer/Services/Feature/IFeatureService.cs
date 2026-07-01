@@ -29,5 +29,7 @@ namespace InventorMcpServer.Services.Feature
         string CreateRectangularPattern(int xCount,double xSpacing,int yCount,double ySpacing);
 
         string CreateShell(double thickness);
+
+        string CreateRevolve(double angle);
     }
 }

@@ -443,4 +443,64 @@ public class FeatureService : IFeatureService
         }
     }
 
+
+    public string CreateRevolve(double angle)
+    {
+        try
+        {
+            var part = _connection.GetActivePart();
+
+            if (part == null)
+                return "No active part.";
+
+            var sketch = _connection.GetLastSketch();
+
+            if (sketch == null)
+                return "No sketch found.";
+
+            // Create profile
+            Profile profile = sketch.Profiles.AddForSolid();
+
+            if (profile == null)
+                return "No closed profile found.";
+
+            // Find an axis line in sketch
+            SketchLine axis = null;
+
+            foreach (SketchEntity entity in sketch.SketchEntities)
+            {
+                if (entity is SketchLine line)
+                {
+                    axis = line;
+                    break;
+                }
+            }
+
+            if (axis == null)
+                return "No axis line found in sketch.";
+
+            var revolve =
+                part.ComponentDefinition
+                    .Features
+                    .RevolveFeatures
+                    .AddByAngle(
+                        profile,
+                        axis,
+                        $"{angle} deg",
+                        PartFeatureExtentDirectionEnum.kPositiveExtentDirection,
+                        PartFeatureOperationEnum.kJoinOperation);
+
+            _connection.SetLastFeature(revolve);
+
+            part.Update();
+
+            _connection.Application!.ActiveView.Update();
+
+            return $"Revolved by {angle}° successfully.";
+        }
+        catch (Exception ex)
+        {
+            return ex.ToString();
+        }
+    }
 }
